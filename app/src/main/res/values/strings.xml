@@ -1,0 +1,60 @@
+<resources>
+    <!-- General -->
+    <string name="app_name">Planificador de Viajes</string>
+
+    <!-- Viaje -->
+    <string name="titulo_viaje">Título del viaje</string>
+    <string name="fecha_salida">Fecha de salida</string>
+    <string name="label_descripcion">Descripción del viaje</string>
+    <string name="hint_descripcion">Escribe una breve descripción del viaje</string>
+
+    <!-- Formulario -->
+    <string name="label_titulo">Título del viaje</string>
+    <string name="hint_titulo">Introduce un título</string>
+
+    <string name="label_fecha_salida">Fecha de salida</string>
+    <string name="hint_fecha_salida">Selecciona o escribe la fecha</string>
+
+    <string name="label_hora_salida">Hora de salida</string>
+    <string name="hint_hora_salida">Selecciona la hora</string>
+
+    <string name="opcion_fecha_flexible">Fecha flexible (aproximada)</string>
+
+    <!-- Imagen -->
+    <string name="label_imagen">Imagen del viaje</string>
+    <string name="desc_imagen_viaje">Imagen ilustrativa del viaje</string>
+    <string name="accion_seleccionar_imagen">Seleccionar imagen</string>
+
+    <!-- Tipo de actividad -->
+    <string name="label_tipo_actividad">Tipo de actividad</string>
+    <string name="tipo_turismo">Turismo</string>
+    <string name="tipo_gastronomia">Gastronomía</string>
+    <string name="tipo_ocio">Ocio</string>
+    <string name="label_spinner_tipo">Selecciona un tipo de actividad</string>
+
+    <!-- Controles avanzados -->
+    <string name="label_recordatorio">Recordatorio</string>
+    <string name="opcion_recordatorio">Activar recordatorio</string>
+
+    <string name="label_presupuesto">Presupuesto (0–3000€)</string>
+    <string name="presupuesto_inicial">Presupuesto: 0€</string>
+
+    <string name="label_valoracion">Valoración</string>
+
+    <!-- Acciones -->
+    <string name="accion_guardar">Guardar viaje</string>
+
+    <!-- Menús -->
+    <string name="menu_nuevo_viaje">Nuevo viaje</string>
+    <string name="menu_acerca_de">Acerca de</string>
+
+    <!-- Diálogo -->
+    <string name="dialogo_confirmar_titulo">Confirmar</string>
+    <string name="dialogo_confirmar_mensaje">¿Deseas guardar el viaje?</string>
+    <string name="dialogo_confirmar_aceptar">Guardar</string>
+    <string name="dialogo_confirmar_cancelar">Cancelar</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

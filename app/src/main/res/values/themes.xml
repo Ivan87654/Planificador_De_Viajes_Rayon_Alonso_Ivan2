@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="Base.Theme.Planificador_De_Viajes_Rayon_Alonso_Ivan"
+        parent="Theme.AppCompat.Light.DarkActionBar">
+
+    </style>
+
+
+    <style name="Theme.Planificador_De_Viajes_Rayon_Alonso_Ivan"
+        parent="Base.Theme.Planificador_De_Viajes_Rayon_Alonso_Ivan" />
+
+</resources>

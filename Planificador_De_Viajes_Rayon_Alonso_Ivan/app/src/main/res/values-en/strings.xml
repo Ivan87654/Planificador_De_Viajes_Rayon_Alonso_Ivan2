@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">Trip Planner</string>
+
+    <!-- Trip -->
+    <string name="titulo_viaje">Trip title</string>
+    <string name="fecha_salida">Departure date</string>
+    <string name="label_descripcion">Trip description</string>
+    <string name="hint_descripcion">Write a short description of the trip</string>
+
+
+    <!-- Form -->
+    <string name="label_titulo">Trip title</string>
+    <string name="hint_titulo">Enter a title</string>
+
+    <string name="label_fecha_salida">Departure date</string>
+    <string name="hint_fecha_salida">Select or enter the date</string>
+
+    <string name="label_hora_salida">Departure time</string>
+    <string name="hint_hora_salida">Select the time</string>
+
+    <string name="opcion_fecha_flexible">Flexible date (approximate)</string>
+
+    <!-- Image -->
+    <string name="label_imagen">Trip image</string>
+    <string name="desc_imagen_viaje">Illustrative image of the trip</string>
+    <string name="accion_seleccionar_imagen">Select image</string>
+
+    <!-- Activity type -->
+    <string name="label_tipo_actividad">Activity type</string>
+    <string name="tipo_turismo">Sightseeing</string>
+    <string name="tipo_gastronomia">Gastronomy</string>
+    <string name="tipo_ocio">Leisure</string>
+    <string name="label_spinner_tipo">Select an activity type</string>
+
+    <!-- Advanced controls -->
+    <string name="label_recordatorio">Reminder</string>
+    <string name="opcion_recordatorio">Enable reminder</string>
+
+    <string name="label_presupuesto">Budget (0–3000€)</string>
+    <string name="presupuesto_inicial">Budget: 0€</string>
+
+    <string name="label_valoracion">Rating</string>
+
+    <!-- Actions -->
+    <string name="accion_guardar">Save trip</string>
+
+    <!-- Menus -->
+    <string name="menu_nuevo_viaje">New trip</string>
+    <string name="menu_acerca_de">About</string>
+
+    <!-- Dialog -->
+    <string name="dialogo_confirmar_titulo">Confirm</string>
+    <string name="dialogo_confirmar_mensaje">Do you want to save this trip?</string>
+    <string name="dialogo_confirmar_aceptar">Save</string>
+    <string name="dialogo_confirmar_cancelar">Cancel</string>
+
+</resources>

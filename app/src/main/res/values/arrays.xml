@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="tipos_viaje_array">
+        <item>Vacaciones</item>
+        <item>Negocios</item>
+        <item>Escapada de fin de semana</item>
+        <item>Visita familiar</item>
+    </string-array>
+
+</resources>
