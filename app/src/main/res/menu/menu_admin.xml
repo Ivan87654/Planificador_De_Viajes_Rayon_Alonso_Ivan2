@@ -13,4 +13,8 @@
         android:id="@+id/opcion_admin"
         android:title="Opciones admin" />
 
+    <item
+        android:id="@+id/opcion_contactos"
+        android:title="Ver contactos" />
+
 </menu>

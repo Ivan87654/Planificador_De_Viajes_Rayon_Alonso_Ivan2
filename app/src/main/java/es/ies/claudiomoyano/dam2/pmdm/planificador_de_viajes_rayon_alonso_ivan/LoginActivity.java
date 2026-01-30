@@ -10,6 +10,12 @@ import android.widget.Toast;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -29,13 +35,31 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnEntrar, btnRegistrar;
 
     private UsuarioDAO usuarioDAO;
+    private static final int CODIGO_PERMISO_SMS = 300;
+
+    private static final int CODIGO_PERMISO_CONTACTOS = 400;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        // Pedir permiso para enviar SMS
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    CODIGO_PERMISO_SMS);
+        }
         Notificaciones.crearCanal(this);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CONTACTS},
+                    CODIGO_PERMISO_CONTACTOS);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
@@ -114,5 +138,24 @@ public class LoginActivity extends AppCompatActivity {
         i.putExtra("ROL", rol);
         startActivity(i);
         finish();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == CODIGO_PERMISO_SMS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permiso SMS concedido", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permiso SMS denegado", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestCode == CODIGO_PERMISO_CONTACTOS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permiso contactos concedido", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permiso contactos denegado", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.notificaciones.Notificaciones;
 import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.Viaje;
+import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.servicios.ServicioBateriaSMS;
+
+
 
 
 import java.util.ArrayList;
@@ -142,6 +145,22 @@ public class MainActivity extends AppCompatActivity {
         ));
     }
 
+    private void mostrarFragmentInfo() {
+        // 1) Obtener FragmentManager
+        androidx.fragment.app.FragmentManager fm = getSupportFragmentManager();
+
+        // 2) Crear transacción
+        androidx.fragment.app.FragmentTransaction ft = fm.beginTransaction();
+
+        // 3) Instancia del fragment a cargar
+        FragmentInfo fragmentInfo = new FragmentInfo();
+
+        // 4) Añadir en el contenedor y ejecutar
+        ft.replace(R.id.contenedorFragmentDinamico, fragmentInfo);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
 
      //Carga el menú de opciones en la Activity.
 
@@ -162,22 +181,32 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        // Abrir la actividad para crear un nuevo viaje
         if (id == R.id.opcion_nuevo_viaje) {
 
-            // Intent explícito con startActivityForResult
             Intent intent = new Intent(MainActivity.this, ActividadNuevoViaje.class);
             startActivityForResult(intent, CODIGO_NUEVO_VIAJE);
             return true;
 
-            // Abrir la actividad "Acerca de"
         } else if (id == R.id.opcion_acerca_de) {
 
             Intent intent = new Intent(MainActivity.this, ActividadAcercaDe.class);
             startActivity(intent);
             return true;
+
         } else if (id == R.id.opcion_admin) {
-            Toast.makeText(this, "Opciones admin", Toast.LENGTH_SHORT).show();
+
+            // Servicio batería + SMS
+            Intent intentServicio = new Intent(MainActivity.this, ServicioBateriaSMS.class);
+            startService(intentServicio);
+
+            Toast.makeText(this, "Servicio batería activado", Toast.LENGTH_SHORT).show();
+            return true;
+
+        } else if (id == R.id.opcion_contactos) {
+
+            // Abrir contactos
+            Intent intent = new Intent(MainActivity.this, ActividadContactos.class);
+            startActivity(intent);
             return true;
         }
 
