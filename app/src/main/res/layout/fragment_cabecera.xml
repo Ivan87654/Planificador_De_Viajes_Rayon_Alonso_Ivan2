@@ -6,10 +6,18 @@
     android:padding="12dp">
 
     <TextView
-        android:id="@+id/txtCabecera"
+        android:id="@+id/txtTituloApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Listado de viajes"
-        android:textSize="18sp" />
+        android:text="Lista de Viajes"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtUsuarioRol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usuario: -"
+        android:textSize="14sp" />
 
 </LinearLayout>

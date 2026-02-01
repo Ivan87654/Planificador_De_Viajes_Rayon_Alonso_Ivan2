@@ -9,9 +9,6 @@
         android:id="@+id/opcion_acerca_de"
         android:title="@string/menu_acerca_de" />
 
-    <item
-        android:id="@+id/opcion_admin"
-        android:title="Opciones admin" />
 
     <item
         android:id="@+id/opcion_contactos"
@@ -24,5 +21,14 @@
     <item
         android:id="@+id/opcion_mapa"
         android:title="Mapa" />
+
+    <item
+        android:id="@+id/opcion_video"
+        android:title="Ver vídeo presentación" />
+    <item
+        android:id="@+id/opcion_audio"
+        android:title="Ayuda: guía de uso" />
+
+
 
 </menu>

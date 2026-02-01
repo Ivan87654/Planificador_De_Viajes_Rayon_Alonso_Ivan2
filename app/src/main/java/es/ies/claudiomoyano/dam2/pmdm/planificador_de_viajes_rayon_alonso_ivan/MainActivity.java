@@ -14,8 +14,6 @@ import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.V
 import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.servicios.ServicioBateriaSMS;
 
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     // Código usado para identificar el resultado al crear un nuevo viaje
     private static final int CODIGO_NUEVO_VIAJE = 1;
 
+    private android.media.MediaPlayer mediaPlayer;
+
     private String rol = "user";
 
     @Override
@@ -46,6 +46,18 @@ public class MainActivity extends AppCompatActivity {
         if (i != null && i.hasExtra("ROL")) {
             rol = i.getStringExtra("ROL");
         }
+
+        // Cargar FragmentCabecera y pasarle el rol
+        FragmentCabecera cabecera = new FragmentCabecera();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("ROL", rol);
+        cabecera.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.contenedorCabecera, cabecera)
+                .commit();
 
         // Enlazar RecyclerView con su vista del layout
         rvViajes = findViewById(R.id.rv_viajes);
@@ -145,21 +157,7 @@ public class MainActivity extends AppCompatActivity {
         ));
     }
 
-    private void mostrarFragmentInfo() {
-        // 1) Obtener FragmentManager
-        androidx.fragment.app.FragmentManager fm = getSupportFragmentManager();
 
-        // 2) Crear transacción
-        androidx.fragment.app.FragmentTransaction ft = fm.beginTransaction();
-
-        // 3) Instancia del fragment a cargar
-        FragmentInfo fragmentInfo = new FragmentInfo();
-
-        // 4) Añadir en el contenedor y ejecutar
-        ft.replace(R.id.contenedorFragmentDinamico, fragmentInfo);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
 
 
      //Carga el menú de opciones en la Activity.
@@ -193,13 +191,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
 
-        } else if (id == R.id.opcion_admin) {
 
-            Intent intentServicio = new Intent(MainActivity.this, ServicioBateriaSMS.class);
-            startService(intentServicio);
-
-            Toast.makeText(this, "Servicio batería activado", Toast.LENGTH_SHORT).show();
-            return true;
 
         } else if (id == R.id.opcion_contactos) {
 
@@ -217,10 +209,24 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, ActividadMapa.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.opcion_video) {
+            Intent intent = new Intent(MainActivity.this, ActividadVideo.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.opcion_audio) {
+
+            // Reproducir audio explicativo
+            if (mediaPlayer == null) {
+                mediaPlayer = android.media.MediaPlayer.create(this, R.raw.audio_guia);
+            }
+
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+                Toast.makeText(this, "Reproduciendo audio...", Toast.LENGTH_SHORT).show();
+            }
         }
 
-
-        return super.onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(item);
     }
 
 
@@ -247,6 +253,14 @@ public class MainActivity extends AppCompatActivity {
 
             // Notificar al RecyclerView que se ha insertado un nuevo elemento
             adaptadorViajes.notifyItemInserted(listaViajes.size() - 1);
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }
