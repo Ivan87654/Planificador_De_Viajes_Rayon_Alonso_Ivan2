@@ -7,5 +7,13 @@
         <item>Escapada de fin de semana</item>
         <item>Visita familiar</item>
     </string-array>
+    <string-array name="temas">
+        <item>Claro</item>
+        <item>Oscuro</item>
+    </string-array>
 
+    <string-array name="temas_values">
+        <item>claro</item>
+        <item>oscuro</item>
+    </string-array>
 </resources>

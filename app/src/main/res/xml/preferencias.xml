@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="Configuración general">
+
+        <SwitchPreferenceCompat
+            android:key="pref_notificaciones"
+            android:title="Notificaciones"
+            android:defaultValue="true" />
+
+        <EditTextPreference
+            android:key="pref_nombre"
+            android:title="Nombre de usuario"
+            android:defaultValue="Invitado"
+            android:dialogTitle="Introduce tu nombre de usuario" />
+
+        <ListPreference
+            android:key="pref_tema"
+            android:title="Tema"
+            android:entries="@array/temas"
+            android:entryValues="@array/temas_values"
+            android:defaultValue="claro" />
+
+        <SeekBarPreference
+            android:key="pref_volumen"
+            android:title="Volumen"
+            android:max="100"
+            android:defaultValue="50" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

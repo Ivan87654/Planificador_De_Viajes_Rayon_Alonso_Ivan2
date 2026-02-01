@@ -17,4 +17,12 @@
         android:id="@+id/opcion_contactos"
         android:title="Ver contactos" />
 
+    <item
+        android:id="@+id/opcion_ajustes"
+        android:title="Ajustes" />
+
+    <item
+        android:id="@+id/opcion_mapa"
+        android:title="Mapa" />
+
 </menu>
