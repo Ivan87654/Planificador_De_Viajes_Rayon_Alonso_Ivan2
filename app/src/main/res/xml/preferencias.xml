@@ -11,7 +11,7 @@
             android:defaultValue="true" />
 
         <EditTextPreference
-            android:key="pref_nombre"
+            android:key="nombre_usuario"
             android:title="Nombre de usuario"
             android:defaultValue="Invitado"
             android:dialogTitle="Introduce tu nombre de usuario" />

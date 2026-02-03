@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
+/**
+ Fragment que muestra la cabecera de la aplicación.
+ */
 public class FragmentCabecera extends Fragment {
 
     @Nullable
@@ -19,9 +21,12 @@ public class FragmentCabecera extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
+        // Inflar el layout del fragment
         View v = inflater.inflate(R.layout.fragment_cabecera, container, false);
 
+        // Enlace con el TextView de la cabecera
         TextView txtUsuarioRol = v.findViewById(R.id.txtUsuarioRol);
+
 
         if (getArguments() != null) {
             String rol = getArguments().getString("ROL", "user");

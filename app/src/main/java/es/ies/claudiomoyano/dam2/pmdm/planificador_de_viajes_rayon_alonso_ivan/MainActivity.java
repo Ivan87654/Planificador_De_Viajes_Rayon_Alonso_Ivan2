@@ -1,55 +1,77 @@
 package es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.notificaciones.Notificaciones;
-import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.Viaje;
-import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.servicios.ServicioBateriaSMS;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
+import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.dao.UsuarioDAO;
+import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.dao.ViajeDAO;
+import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.notificaciones.Notificaciones;
+import es.ies.claudiomoyano.dam2.pmdm.planificador_de_viajes_rayon_alonso_ivan.servicios.ServicioBateriaSMS;
 
+/**
+ * Actividad principal de la aplicación.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    // RecyclerView para mostrar los viajes
+    // RecyclerView que muestra los viajes
     private RecyclerView rvViajes;
 
-    // Adaptador para transformar los datos en vistas
+    // Adaptador que conecta los datos con el RecyclerView
     private AdaptadorViajes adaptadorViajes;
 
-    // Fuente de datos
+    // Lista de viajes mostrados en pantalla
     private List<Viaje> listaViajes;
 
-    // Código usado para identificar el resultado al crear un nuevo viaje
+    // Código para identificar el resultado de crear un nuevo viaje
     private static final int CODIGO_NUEVO_VIAJE = 1;
 
-    private android.media.MediaPlayer mediaPlayer;
-
+    // Datos del usuario logueado
     private String rol = "user";
+    private String usuarioActual = null;
+    private int idUsuario = -1;
+
+    // DAOs para acceso a la base de datos
+    private UsuarioDAO usuarioDAO;
+    private ViajeDAO viajeDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Recibir rol desde LoginActivity
+        // Recibir datos enviados desde LoginActivity
         Intent i = getIntent();
-        if (i != null && i.hasExtra("ROL")) {
-            rol = i.getStringExtra("ROL");
+        if (i != null) {
+            if (i.hasExtra("ROL")) {
+                rol = i.getStringExtra("ROL");
+            }
+            if (i.hasExtra("USUARIO")) {
+                usuarioActual = i.getStringExtra("USUARIO");
+            }
         }
 
-        // Cargar FragmentCabecera y pasarle el rol
-        FragmentCabecera cabecera = new FragmentCabecera();
+        // Inicializar acceso a la base de datos
+        usuarioDAO = new UsuarioDAO(this);
+        viajeDAO = new ViajeDAO(this);
 
+        // Obtener el id del usuario para relacionar los viajes
+        if (usuarioActual != null) {
+            idUsuario = usuarioDAO.obtenerIdUsuario(usuarioActual);
+        }
+
+        // Cargar el fragmento de cabecera mostrando el rol
+        FragmentCabecera cabecera = new FragmentCabecera();
         Bundle bundle = new Bundle();
         bundle.putString("ROL", rol);
         cabecera.setArguments(bundle);
@@ -59,109 +81,94 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.contenedorCabecera, cabecera)
                 .commit();
 
-        // Enlazar RecyclerView con su vista del layout
+        // Configurar RecyclerView
         rvViajes = findViewById(R.id.rv_viajes);
-
-        // Inicializar lista y cargar datos de ejemplo
-        listaViajes = new ArrayList<>();
-        cargarViajesEjemplo();
-
-        // Asignar un LayoutManager
         rvViajes.setLayoutManager(new LinearLayoutManager(this));
 
-        // Crear adaptador y asignarlo al RecyclerView
+        // Inicializar lista de viajes
+        listaViajes = new ArrayList<>();
+
+        // Cargar viajes de ejemplo
+        cargarViajesEjemplo();
+
+        // Añadir viajes guardados en SQLite para el usuario actual
+        if (idUsuario != -1) {
+            listaViajes.addAll(viajeDAO.obtenerViajesDeUsuario(idUsuario));
+        }
+
+        // Crear y asignar el adaptador
         adaptadorViajes = new AdaptadorViajes(listaViajes);
         rvViajes.setAdapter(adaptadorViajes);
 
-        // Listener para pulsación normal sobre un elemento del RecyclerView
+        // abrir detalle del viaje
+        adaptadorViajes.setOnItemClickListener(position -> {
+            Viaje viajeSeleccionado = listaViajes.get(position);
 
-        adaptadorViajes.setOnItemClickListener(new AdaptadorViajes.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Viaje viajeSeleccionado = listaViajes.get(position);
+            Intent intent = new Intent(MainActivity.this, ActividadDetalleViaje.class);
+            intent.putExtra("titulo", viajeSeleccionado.getTitulo());
+            intent.putExtra("fecha", viajeSeleccionado.getFechaSalida());
+            intent.putExtra("imagen", viajeSeleccionado.getIdRecursoImagen());
+            intent.putExtra("descripcion", viajeSeleccionado.getDescripcion());
 
-                // Crear Intent explícito para abrir la actividad de detalles
-
-                Intent intent = new Intent(MainActivity.this, ActividadDetalleViaje.class);
-
-                // Enviar datos mediante putExtra
-                intent.putExtra("titulo", viajeSeleccionado.getTitulo());
-                intent.putExtra("fecha", viajeSeleccionado.getFechaSalida());
-                intent.putExtra("imagen", viajeSeleccionado.getIdRecursoImagen());
-                intent.putExtra("descripcion", viajeSeleccionado.getDescripcion());
-
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
 
-        // Listener para eliminar un viaje desde el menú contextual
-        adaptadorViajes.setOnItemMenuListener(new AdaptadorViajes.OnItemMenuListener() {
-            @Override
-            public void onEliminar(int position) {
+        // Opción eliminar:
+        adaptadorViajes.setOnItemMenuListener(position -> {
 
-                String titulo = listaViajes.get(position).getTitulo();
+            Viaje v = listaViajes.get(position);
 
-                listaViajes.remove(position);
-                adaptadorViajes.notifyItemRemoved(position);
-
-                Notificaciones.notificarBorrado(MainActivity.this, titulo);
+            // Si el viaje está en la base de datos, eliminarlo también allí
+            if (v.getIdViaje() != -1) {
+                viajeDAO.eliminarViaje(v.getIdViaje());
             }
+
+            listaViajes.remove(position);
+            adaptadorViajes.notifyItemRemoved(position);
+
+            // Mostrar notificación de borrado
+            Notificaciones.notificarBorrado(MainActivity.this, v.getTitulo());
         });
+
+        // Iniciar servicio que controla la batería y envía SMS
+        iniciarServicioBateriaSMS();
     }
 
+    /**
+     * Inicia el servicio de batería si el permiso de SMS está concedido.
+     */
+    private void iniciarServicioBateriaSMS() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.SEND_SMS
+        ) == PackageManager.PERMISSION_GRANTED) {
 
+            Intent intent = new Intent(this, ServicioBateriaSMS.class);
+            startService(intent);
+        }
+    }
 
-
-     //Metodo que carga datos de ejemplo a la lista
+    /**
+     * Añade viajes de ejemplo a la lista.
+     */
     private void cargarViajesEjemplo() {
-        listaViajes.add(new Viaje(
-                "Roma - El Coliseum",
-                "12/04/2025",
-                R.drawable.roma,
-                "Visita una de las Siete Maravillas del Mundo Moderno. El Coliseo es el mayor anfiteatro del Imperio Romano y un símbolo eterno de la ciudad. Descubre su historia, los gladiadores y el corazón del antiguo deporte romano."
-        ));
-
-        listaViajes.add(new Viaje(
-                "París - La Torre Eiffel",
-                "20/07/2025",
-                R.drawable.paris,
-                "La Torre Eiffel es el monumento más famoso de Francia. Disfruta de París desde sus miradores, pasea por los Campos de Marte y explora la romántica atmósfera de la Ciudad de la Luz."
-        ));
-
-        listaViajes.add(new Viaje(
-                "Londres - El Big Ben",
-                "05/10/2025",
-                R.drawable.londres,
-                "El Big Ben y el Palacio de Westminster forman uno de los iconos más reconocibles del Reino Unido. Recorre la zona del Támesis, descubre la historia del parlamento británico y vive el ambiente cosmopolita de Londres."
-        ));
-
-        listaViajes.add(new Viaje(
-                "Nueva York – Manhattan",
-                "15/03/2026",
-                R.drawable.nuevayork,
-                "Manhattan es el corazón de Nueva York. Recorre Times Square, Central Park, Broadway y los rascacielos más famosos del mundo en la ciudad que nunca duerme."
-        ));
-
-        listaViajes.add(new Viaje(
-                "Berlín – Ruta histórica",
-                "09/09/2025",
-                R.drawable.berlin,
-                "En Berlín podrás visitar el Muro, el Reichstag, la Puerta de Brandeburgo y museos llenos de historia. Una ciudad moderna que mezcla memoria, innovación y cultura europea."
-        ));
-
-        listaViajes.add(new Viaje(
-                "Egipto – Pirámides de Giza",
-                "02/02/2026",
-                R.drawable.egipto,
-                "Explora la necrópolis más famosa del planeta. Las Pirámides de Giza y la Gran Esfinge son vestigios milenarios del Antiguo Egipto, ideales para amantes de la historia y la arqueología."
-        ));
+        listaViajes.add(new Viaje("Roma - El Coliseum", "12/04/2025", R.drawable.roma,
+                "Visita una de las Siete Maravillas del Mundo Moderno."));
+        listaViajes.add(new Viaje("París - La Torre Eiffel", "20/07/2025", R.drawable.paris,
+                "La Torre Eiffel es el monumento más famoso de Francia."));
+        listaViajes.add(new Viaje("Londres - El Big Ben", "05/10/2025", R.drawable.londres,
+                "Uno de los iconos más reconocibles del Reino Unido."));
+        listaViajes.add(new Viaje("Nueva York – Manhattan", "15/03/2026", R.drawable.nuevayork,
+                "El corazón de la ciudad que nunca duerme."));
+        listaViajes.add(new Viaje("Berlín – Ruta histórica", "09/09/2025", R.drawable.berlin,
+                "Una ciudad marcada por la historia europea."));
+        listaViajes.add(new Viaje("Egipto – Pirámides de Giza", "02/02/2026", R.drawable.egipto,
+                "Restos milenarios del Antiguo Egipto."));
     }
 
-
-
-
-     //Carga el menú de opciones en la Activity.
-
+    /**
+     * Carga el menú según el rol del usuario.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if ("admin".equals(rol)) {
@@ -172,95 +179,73 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-
-     //Gestiona la pulsación sobre las opciones del menú.
-
+    /**
+     * Gestiona las acciones del menú.
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         int id = item.getItemId();
 
         if (id == R.id.opcion_nuevo_viaje) {
-
-            Intent intent = new Intent(MainActivity.this, ActividadNuevoViaje.class);
-            startActivityForResult(intent, CODIGO_NUEVO_VIAJE);
+            startActivityForResult(new Intent(this, ActividadNuevoViaje.class), CODIGO_NUEVO_VIAJE);
             return true;
 
         } else if (id == R.id.opcion_acerca_de) {
-
-            Intent intent = new Intent(MainActivity.this, ActividadAcercaDe.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ActividadAcercaDe.class));
             return true;
 
-
-
         } else if (id == R.id.opcion_contactos) {
-
-            Intent intent = new Intent(MainActivity.this, ActividadContactos.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ActividadContactos.class));
             return true;
 
         } else if (id == R.id.opcion_ajustes) {
-
-            Intent intent = new Intent(MainActivity.this, ActividadPreferencias.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ActividadPreferencias.class));
             return true;
+
         } else if (id == R.id.opcion_mapa) {
-
-            Intent intent = new Intent(MainActivity.this, ActividadMapa.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ActividadMapa.class));
             return true;
+
         } else if (id == R.id.opcion_video) {
-            Intent intent = new Intent(MainActivity.this, ActividadVideo.class);
+            Intent intent = new Intent(this, ActividadVideo.class);
+            intent.putExtra("DESDE_MENU", true);
             startActivity(intent);
             return true;
+
         } else if (id == R.id.opcion_audio) {
-
-            // Reproducir audio explicativo
-            if (mediaPlayer == null) {
-                mediaPlayer = android.media.MediaPlayer.create(this, R.raw.audio_guia);
-            }
-
-            if (mediaPlayer != null) {
-                mediaPlayer.start();
-                Toast.makeText(this, "Reproduciendo audio...", Toast.LENGTH_SHORT).show();
-            }
+            startActivity(new Intent(this, ActividadAudio.class));
+            return true;
         }
 
-            return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
-
-     //Metodo que recibe el resultado enviado desde ActividadNuevoViaje
-
+    /**
+     * Recibe el viaje creado y lo guarda en SQLite y en la lista.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Confirmar que se trata del resultado correcto
         if (requestCode == CODIGO_NUEVO_VIAJE && resultCode == RESULT_OK && data != null) {
 
-            // Recuperar datos enviados por la actividad
             String titulo = data.getStringExtra("titulo");
             String fecha = data.getStringExtra("fecha");
             String descripcion = data.getStringExtra("descripcion");
 
-            // Imagen por defecto
             int imagen = R.drawable.viaje;
 
-            // Añadir nuevo viaje a la lista
-            Viaje nuevoViaje = new Viaje(titulo, fecha, imagen, descripcion);
-            listaViajes.add(nuevoViaje);
+            // Guardar el viaje en la base de datos
+            if (idUsuario != -1) {
+                long idViaje = viajeDAO.insertarViaje(titulo, fecha, descripcion, idUsuario);
+                listaViajes.add(new Viaje((int) idViaje, titulo, fecha, imagen, descripcion));
+            } else {
+                // Si no hay usuario, se añade solo en memoria
+                listaViajes.add(new Viaje(titulo, fecha, imagen, descripcion));
+            }
 
-            // Notificar al RecyclerView que se ha insertado un nuevo elemento
             adaptadorViajes.notifyItemInserted(listaViajes.size() - 1);
-        }
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
         }
     }
 }

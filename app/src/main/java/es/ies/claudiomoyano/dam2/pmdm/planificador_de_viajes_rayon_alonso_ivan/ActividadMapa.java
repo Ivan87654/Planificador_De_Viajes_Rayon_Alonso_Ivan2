@@ -12,7 +12,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
+/**
+ * Actividad que muestra un mapa de Google Maps con un marcador.
+ */
 public class ActividadMapa extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -22,24 +24,35 @@ public class ActividadMapa extends FragmentActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        // Obtener el fragmento de Google Maps desde el layout
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
 
+        // Cargar el mapa
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
     }
 
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
+        // Coordenadas de Roma
         LatLng roma = new LatLng(41.8902, 12.4922);
 
-        mMap.addMarker(new MarkerOptions()
-                .position(roma)
-                .title("Roma - Coliseo"));
+        // Añadir un marcador en el mapa
+        mMap.addMarker(
+                new MarkerOptions()
+                        .position(roma)
+                        .title("Roma - Coliseo")
+        );
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(roma, 12f));
+        // Mover la cámara
+        mMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(roma, 12f)
+        );
     }
 }

@@ -12,4 +12,9 @@
     <item
         android:id="@+id/opcion_audio"
         android:title="Ayuda: guía de uso" />
+
+    <item
+        android:id="@+id/opcion_ajustes"
+        android:title="Ajustes" />
+
 </menu>

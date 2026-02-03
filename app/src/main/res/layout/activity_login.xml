@@ -39,7 +39,7 @@
             android:id="@+id/edtTelefonoAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Teléfono admin (para SMS)"
+            android:hint="Teléfono admin "
             android:inputType="phone"
             android:enabled="false" />
 

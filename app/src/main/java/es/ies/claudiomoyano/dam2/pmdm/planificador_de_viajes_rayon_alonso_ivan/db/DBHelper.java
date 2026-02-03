@@ -4,23 +4,31 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ Clase encargada de la creación y gestión de la base de datos SQLite.
 
+ */
 public class DBHelper extends SQLiteOpenHelper {
 
-    // Nombre y versión de la BD
+    // Nombre y versión de la base de datos
     private static final String DB_NAME = "planificador_viajes.db";
     private static final int DB_VERSION = 1;
 
-    // Tablas
+    // Nombres de las tablas
     public static final String TABLA_USUARIOS = "usuarios";
     public static final String TABLA_VIAJES = "viajes";
     public static final String TABLA_LUGARES = "lugares";
     public static final String TABLA_ACTIVIDADES = "actividades";
 
+
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    /**
+
+     * Aquí se definen las tablas y sus claves foráneas.
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -58,6 +66,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         "FOREIGN KEY(id_viaje) REFERENCES " + TABLA_VIAJES + "(id_viaje)" +
                         ");"
         );
+
+
         db.execSQL(
                 "CREATE TABLE " + TABLA_ACTIVIDADES + " (" +
                         "id_actividad INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -70,6 +80,10 @@ public class DBHelper extends SQLiteOpenHelper {
         );
     }
 
+    /**
+     Se ejecuta cuando cambia la versión de la base de datos.
+
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -77,6 +91,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLA_LUGARES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLA_VIAJES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLA_USUARIOS);
+
         onCreate(db);
     }
 }

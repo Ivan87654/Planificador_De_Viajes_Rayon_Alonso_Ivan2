@@ -5,7 +5,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * Activity que muestra el panel de configuración mediante FragmentPreferencias.
+ * Actividad encargada de mostrar el panel de configuración de la aplicación.
+
  */
 public class ActividadPreferencias extends AppCompatActivity {
 
@@ -14,10 +15,13 @@ public class ActividadPreferencias extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferencias);
 
-        // Cargar el fragment de preferencias en el contenedor
+        // Cargar el fragment de preferencias en el contenedor del layout
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.contenedorPreferencias, new FragmentPreferencias())
+                .replace(
+                        R.id.contenedorPreferencias,
+                        new FragmentPreferencias()
+                )
                 .commit();
     }
 }

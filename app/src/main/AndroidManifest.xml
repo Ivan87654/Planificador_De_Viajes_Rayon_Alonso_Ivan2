@@ -67,6 +67,8 @@
             android:name=".ActividadMapa"
             android:exported="false" />
 
+        <activity android:name=".ActividadAudio" />
+
         <!-- Google Maps API -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
